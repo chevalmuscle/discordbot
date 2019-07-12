@@ -2,8 +2,10 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 const ytdl = require("ytdl-core");
 require("dotenv").config(); // to use environment variables
+const port = process.env.PORT;
+const discordToken = process.env.DISCORD_TOKEN;
 
-client.login(process.env.DISCORD_TOKEN);
+client.login(discordToken);
 
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
@@ -29,4 +31,23 @@ client.on("message", async message => {
       message.reply("You need to join a voice channel first!");
     }
   }
+});
+
+var http = require("http");
+if (!http) process.exit(1);
+
+var serveRequest = function(request, response) {
+  const url = request.url;
+  console.log(url);
+  response.write("hello world !");
+  response.end();
+};
+
+const server = http.createServer(serveRequest);
+
+server.listen(port, err => {
+  if (err) {
+    return console.log("Something bad happened when starting to server", err);
+  }
+  console.log(`Listening on port ${port} 🐷`);
 });
