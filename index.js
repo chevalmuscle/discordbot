@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
 const ytdl = require("ytdl-core");
+require("dotenv").config(); // to use environment variables
 
 client.login(process.env.DISCORD_TOKEN);
 
