@@ -10,11 +10,17 @@ const mongoConnectionUri = process.env.MONGO_CONNECTION_URI;
 
 const dbClient = new MongoClient(mongoConnectionUri, { useNewUrlParser: true });
 dbClient.connect(err => {
-  if (!err){
+  if (err != null){
     console.log(err)
   }
-  const collection = dbClient.db("test").collection("devices");
-  console.log(collection)
+  const collection = dbClient.db("commands").collection("musics");
+  collection.find({}).toArray(function(err, docs) {
+    if (err != null){
+      console.log(err)
+    }
+    console.log(docs)
+  });
+  
   dbClient.close();
 });
 
