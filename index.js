@@ -1,9 +1,28 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
+const MongoClient = require('mongodb').MongoClient;
 const ytdl = require("ytdl-core");
+
 require("dotenv").config(); // to use environment variables
 const port = process.env.PORT;
 const discordToken = process.env.DISCORD_TOKEN;
+const mongoConnectionUri = process.env.MONGO_CONNECTION_URI;
+
+const dbClient = new MongoClient(mongoConnectionUri, { useNewUrlParser: true });
+dbClient.connect(err => {
+  if (err != null){
+    console.log(err)
+  }
+  const collection = dbClient.db("commands").collection("musics");
+  collection.find({}).toArray(function(err, docs) {
+    if (err != null){
+      console.log(err)
+    }
+    console.log(docs)
+  });
+  
+  dbClient.close();
+});
 
 client.login(discordToken);
 
