@@ -1,28 +1,11 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
-const MongoClient = require('mongodb').MongoClient;
-const ytdl = require("ytdl-core");
 
 require("dotenv").config(); // to use environment variables
 const port = process.env.PORT;
 const discordToken = process.env.DISCORD_TOKEN;
-const mongoConnectionUri = process.env.MONGO_CONNECTION_URI;
 
-const dbClient = new MongoClient(mongoConnectionUri, { useNewUrlParser: true });
-dbClient.connect(err => {
-  if (err != null){
-    console.log(err)
-  }
-  const collection = dbClient.db("commands").collection("musics");
-  collection.find({}).toArray(function(err, docs) {
-    if (err != null){
-      console.log(err)
-    }
-    console.log(docs)
-  });
-  
-  dbClient.close();
-});
+const commands = require("./commands");
 
 client.login(discordToken);
 
@@ -31,24 +14,33 @@ client.on("ready", () => {
 });
 
 client.on("message", async message => {
-  // Voice only works in guilds, if the message does not come from a guild,
-  // we ignore it
   if (!message.guild) return;
 
-  if (message.content === "/join") {
-    // Only try to join the sender's voice channel if they are in one themselves
-    if (message.member.voiceChannel) {
-      const streamOptions = { seek: 0, volume: 1 };
-      message.member.voiceChannel.join().then(connection => {
-        // ReadableStreams, in this example YouTube audio
-        const stream = ytdl("https://www.youtube.com/watch?v=ZyhrYis509A", {
-          filter: "audioonly",
-        });
-        const dispatcher = connection.playStream(stream, streamOptions);
-      });
-    } else {
-      message.reply("You need to join a voice channel first!");
+  const voiceChannel = message.member.voiceChannel;
+  const textChannel = message.channel;
+
+  const messageArgs = message.content.split(" ");
+  const messageArgAmount = messageArgs.length;
+
+  const invokeArgs = {
+    message: messageArgs,
+    textChannel: textChannel,
+    voiceChannel: voiceChannel,
+  };
+
+  // checks if the message is a known command
+  for (command in commands) {
+    if (
+      command.invocation === messageArgs[0] &&
+      command.argumentsAmount === messageArgAmount
+    ) {
+      command.invoke(invokeArgs);
     }
+  }
+
+  // if the command is not found, it might be a sound command
+  if (messageArgAmount === commands.play.argumentsAmount) {
+    commands.play.invoke(invokeArgs);
   }
 });
 
