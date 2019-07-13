@@ -68,7 +68,7 @@ async function playMusic({ message, voiceChannel }) {
   if (voiceChannel) {
     getMusicCommand(command).then(
       response => {
-        const streamOptions = { seek: 0, volume: 1 };
+        const streamOptions = { volume: 1, passes: 3 };
 
         if (isUpperCase(command)) {
           streamOptions.volume = 10;
