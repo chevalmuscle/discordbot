@@ -27,7 +27,11 @@ const commands = {
   },
 };
 
-function help({ textCommand }) {}
+async function help({ textChannel }) {
+  const musicCommands = await getMusicCommands();
+  textChannel.send("By Chevalmusclé");
+  textChannel.send(musicCommands.map(musicCommand => musicCommand.command).join(", "))
+}
 
 async function playMusic({ message, voiceChannel }) {
   const command = message[0];
@@ -56,6 +60,22 @@ async function playMusic({ message, voiceChannel }) {
 function addSound({ message }) {}
 
 function deleteSound({ message }) {}
+
+async function getMusicCommands() {
+  const client = await MongoClient.connect(mongoConnectionUri, {
+    useNewUrlParser: true,
+  }).catch(err => {
+    console.log(err);
+  });
+
+  if (!client) {
+    return;
+  }
+  const collection = client.db("commands").collection("musics");
+  const musicCommands = await collection.find().toArray();
+  client.close();
+  return musicCommands;
+}
 
 async function getMusicLink(command) {
   const client = await MongoClient.connect(mongoConnectionUri, {
