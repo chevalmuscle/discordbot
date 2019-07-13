@@ -6,18 +6,19 @@ const commands = {
   help: {
     invocation: "!help",
     argumentsAmount: 1,
+    help: "!help to help",
     invoke: help,
   },
   addsound: {
     invocation: "addsound",
     argumentsAmount: 3,
-    wrongFormat: "The format must be like `addsound <command> <link>`",
+    help: "The format must be like `addsound <command> <link>`",
     invoke: addSound,
   },
   deletesound: {
-    invocation: "delete",
+    invocation: "deletesound",
     argumentsAmount: 2,
-    wrongFormat: "The format must be like `addsound <command> <link>`",
+    help: "The format must be like `deletesound <command>`",
     invoke: deleteSound,
   },
   play: {
@@ -28,11 +29,31 @@ const commands = {
 };
 
 function help({ textChannel }) {
+  textChannel.send("By Chevalmusclé");
+
+  const commandsDescription = [];
+  for (var key in commands) {
+    if (commands[key].invocation !== null) {
+      commandsDescription.push({
+        name: commands[key].invocation,
+        value: commands[key].help,
+      });
+    }
+  }
+  const embedCommandDescriptions = {
+    color: 0xff0000,
+    title: "General Commands",
+    fields: commandsDescription,
+  };
+
+  textChannel.send({ embed: embedCommandDescriptions });
+
   getMusicCommands().then(
     response => {
-      textChannel.send("By Chevalmusclé");
       textChannel.send(
-        response.map(musicCommand => musicCommand.command).join(", "),
+        `Sounds: \n ${response
+          .map(musicCommand => musicCommand.command)
+          .join(", ")}`,
       );
     },
     reject => {

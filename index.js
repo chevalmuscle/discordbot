@@ -11,6 +11,7 @@ client.login(discordToken);
 
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
+  client.user.setActivity(`${commands.help.invocation} to 😧`)
 });
 
 client.on("message", async message => {
