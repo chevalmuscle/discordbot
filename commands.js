@@ -39,7 +39,7 @@ async function playMusic({ message, voiceChannel }) {
   const command = message[0];
 
   if (voiceChannel) {
-    const link = await getMusicLink(command.toLowerCase(), voiceChannel);
+    const data = await getMusicCommand(command.toLowerCase(), voiceChannel);
 
     const streamOptions = { seek: 0, volume: 1 };
 
@@ -48,7 +48,7 @@ async function playMusic({ message, voiceChannel }) {
     }
 
     voiceChannel.join().then(connection => {
-      const stream = ytdl(link, {
+      const stream = ytdl(data.link, {
         filter: "audioonly",
       });
       const dispatcher = connection.playStream(stream, streamOptions);
@@ -63,12 +63,12 @@ function addSound({ message, textChannel }) {
   const soundCommand = message[1];
   const link = message[2];
 
-  checkIfCommandInDB(soundCommand, link).then(
+  getMusicCommand(soundCommand, link).then(
     response => {
-      addSoundToDB(soundCommand, link);
+      textChannel.send(`This command already exists with ${response.link}`);
     },
     err => {
-      textChannel.send(`This command already exists with ${err.link}`);
+      addSoundToDB(soundCommand, link);
     },
   );
 }
@@ -91,22 +91,27 @@ async function getMusicCommands() {
   return musicCommands;
 }
 
-async function getMusicLink(command) {
-  const client = await MongoClient.connect(mongoConnectionUri, {
-    useNewUrlParser: true,
-  }).catch(err => {
-    console.log(err);
+async function getMusicCommand(command) {
+  return new Promise(async (resolve, reject) => {
+    const client = await MongoClient.connect(mongoConnectionUri, {
+      useNewUrlParser: true,
+    }).catch(err => {
+      console.log(err);
+    });
+
+    if (!client) {
+      return;
+    }
+    const collection = client.db("commands").collection("musics");
+    const data = await collection.findOne({ command: command });
+
+    if (data !== null) {
+      resolve(data);
+    } else {
+      reject("Command not found");
+    }
+    client.close();
   });
-
-  if (!client) {
-    return;
-  }
-  const collection = client.db("commands").collection("musics");
-  const data = await collection.findOne({ command: command });
-
-  client.close();
-
-  return data.link;
 }
 
 async function addSoundToDB(soundCommand, link) {
@@ -132,30 +137,6 @@ async function addSoundToDB(soundCommand, link) {
   );
 
   client.close();
-}
-
-async function checkIfCommandInDB(soundCommand) {
-  return new Promise(async (resolve, reject) => {
-    const client = await MongoClient.connect(mongoConnectionUri, {
-      useNewUrlParser: true,
-    }).catch(err => {
-      console.log(err);
-    });
-
-    if (!client) {
-      return;
-    }
-    const collection = client.db("commands").collection("musics");
-    const data = await collection.findOne({ command: soundCommand });
-
-    if (data === null) {
-      resolve();
-    } else {
-      reject(data);
-    }
-
-    client.close();
-  });
 }
 
 function isUpperCase(str) {
