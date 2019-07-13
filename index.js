@@ -30,11 +30,12 @@ client.on("message", async message => {
 
   // checks if the message is a known command
   for (command in commands) {
+    const value = commands[command];
     if (
-      command.invocation === messageArgs[0] &&
-      command.argumentsAmount === messageArgAmount
+      value.invocation === messageArgs[0] &&
+      value.argumentsAmount === messageArgAmount
     ) {
-      command.invoke(invokeArgs);
+      value.invoke(invokeArgs);
     }
   }
 
