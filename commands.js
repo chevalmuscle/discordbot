@@ -63,11 +63,14 @@ function addSound({ message, textChannel }) {
   const soundCommand = message[1];
   const link = message[2];
 
-  checkIfCommandInDB(soundCommand, link)
-    .then(addSoundToDB(soundCommand, link))
-    .catch(err =>
-      textChannel.send(`This command already exists with ${err.link}`),
-    );
+  checkIfCommandInDB(soundCommand, link).then(
+    response => {
+      addSoundToDB(soundCommand, link);
+    },
+    err => {
+      textChannel.send(`This command already exists with ${err.link}`);
+    },
+  );
 }
 
 function deleteSound({ message }) {}
