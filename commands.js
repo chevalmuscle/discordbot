@@ -39,7 +39,7 @@ async function playMusic({ message, voiceChannel }) {
   const command = message[0];
 
   if (voiceChannel) {
-    const link = await getMusicLink(command, voiceChannel);
+    const link = await getMusicLink(command.toLowerCase(), voiceChannel);
 
     const streamOptions = { seek: 0, volume: 1 };
 
@@ -119,7 +119,7 @@ async function addSoundToDB(soundCommand, link) {
   const collection = client.db("commands").collection("musics");
   await collection.insertOne(
     {
-      command: soundCommand,
+      command: soundCommand.toLowerCase(),
       link: link,
     },
     function(err, res) {
