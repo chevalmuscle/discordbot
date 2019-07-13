@@ -28,6 +28,8 @@ client.on("message", async message => {
     voiceChannel: voiceChannel,
   };
 
+  var commandInvoked = false;
+
   // checks if the message is a known command
   for (command in commands) {
     const value = commands[command];
@@ -36,11 +38,12 @@ client.on("message", async message => {
       value.argumentsAmount === messageArgAmount
     ) {
       value.invoke(invokeArgs);
+      commandInvoked = true;
     }
   }
 
   // if the command is not found, it might be a sound command
-  if (messageArgAmount === commands.play.argumentsAmount) {
+  if (!commandInvoked && messageArgAmount === commands.play.argumentsAmount) {
     commands.play.invoke(invokeArgs);
   }
 });
