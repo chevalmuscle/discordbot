@@ -52,8 +52,6 @@ client.on("message", async message => {
 });
 
 const serveRequest = function(request, response) {
-  const url = request.url;
-  console.log(url);
   response.write("hello world !");
   response.end();
 };
@@ -62,7 +60,7 @@ const server = http.createServer(serveRequest);
 
 server.listen(port, err => {
   if (err) {
-    return console.log("Something bad happened when starting to server", err);
+    console.log("Something bad happened when starting to server", err);
   }
   console.log(`Listening on port ${port} 🐷`);
 });
