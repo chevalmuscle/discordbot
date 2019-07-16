@@ -1,4 +1,6 @@
 const Discord = require("discord.js");
+const http = require("http");
+
 const client = new Discord.Client();
 
 require("dotenv").config(); // to use environment variables
@@ -29,7 +31,7 @@ client.on("message", async message => {
     voiceChannel: voiceChannel,
   };
 
-  var commandInvoked = false;
+  let commandInvoked = false;
 
   // checks if the message is a known command
   for (command in commands) {
@@ -49,10 +51,7 @@ client.on("message", async message => {
   }
 });
 
-var http = require("http");
-if (!http) process.exit(1);
-
-var serveRequest = function(request, response) {
+const serveRequest = function(request, response) {
   const url = request.url;
   console.log(url);
   response.write("hello world !");

@@ -32,7 +32,7 @@ function help({ textChannel }) {
   textChannel.send("By Chevalmusclé");
 
   const commandsDescription = [];
-  for (var key in commands) {
+  for (let key in commands) {
     if (commands[key].invocation !== null) {
       commandsDescription.push({
         name: commands[key].invocation,
