@@ -174,7 +174,7 @@ function addSoundToCollection(soundCommand, link, collectionName) {
         if (err) {
           reject(err);
         }
-        console.log("1 document inserted");
+        console.log("1 document inserted", res);
       },
     );
 
@@ -200,7 +200,7 @@ function deleteSoundFromDB(soundCommand) {
         if (err) {
           reject(err);
         }
-        console.log("1 document deleted");
+        console.log("1 document deleted", obj);
       },
     );
     client.close();
