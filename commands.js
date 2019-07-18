@@ -48,46 +48,53 @@ function help({ textChannel }) {
 
   textChannel.send({ embed: embedCommandDescriptions });
 
-  getMusicCommands().then(
-    response => {
-      textChannel.send(
-        `Sounds: \n ${response
-          .map(musicCommand => musicCommand.command)
-          .join(", ")}`,
-      );
-    },
-    reject => {
-      console.log(reject);
-    },
-  );
+  getMusicCommands()
+    .then(
+      response => {
+        textChannel.send(
+          `Sounds: \n ${response
+            .map(musicCommand => musicCommand.command)
+            .join(", ")}`,
+        );
+      },
+      reject => {
+        console.log(reject);
+      },
+    )
+    .catch(e => console.log(e));
 }
 
 async function playMusic({ message, voiceChannel }) {
   const command = message[0];
 
   if (voiceChannel) {
-    getMusicCommand(command).then(
-      response => {
-        const streamOptions = { volume: 1, passes: 3 };
+    getMusicCommand(command)
+      .then(
+        response => {
+          const streamOptions = { volume: 1, passes: 3 };
 
-        if (isUpperCase(command)) {
-          streamOptions.volume = 10;
-        }
+          if (isUpperCase(command)) {
+            streamOptions.volume = 10;
+          }
 
-        voiceChannel.join().then(connection => {
-          const stream = ytdl(response.link, {
-            filter: "audioonly",
-          });
-          const dispatcher = connection.playStream(stream, streamOptions);
-          dispatcher.on("end", end => {
-            voiceChannel.leave();
-          });
-        });
-      },
-      reject => {
-        console.log(reject);
-      },
-    );
+          voiceChannel
+            .join()
+            .then(connection => {
+              const stream = ytdl(response.link, {
+                filter: "audioonly",
+              });
+              const dispatcher = connection.playStream(stream, streamOptions);
+              dispatcher.on("end", end => {
+                voiceChannel.leave();
+              });
+            })
+            .catch(e => console.log(e));
+        },
+        reject => {
+          console.log(reject);
+        },
+      )
+      .catch(e => console.log(e));
   }
 }
 
@@ -95,29 +102,33 @@ function addSound({ message, textChannel }) {
   const soundCommand = message[1];
   const link = message[2];
 
-  getMusicCommand(soundCommand).then(
-    response => {
-      textChannel.send(`This command already exists with ${response.link}`);
-    },
-    reject => {
-      addSoundToCollection(soundCommand, link, "musics");
-    },
-  );
+  getMusicCommand(soundCommand)
+    .then(
+      response => {
+        textChannel.send(`This command already exists with ${response.link}`);
+      },
+      reject => {
+        addSoundToCollection(soundCommand, link, "musics");
+      },
+    )
+    .catch(e => console.log(e));
 }
 
 function deleteSound({ message, textChannel }) {
   const soundCommand = message[1];
 
-  getMusicCommand(soundCommand).then(response => {
-    addSoundToCollection(response.command, response.link, "old_musics").then(
-      response => {
-        deleteSoundFromDB(soundCommand);
-      },
-      reject => {
-        console.log(reject);
-      },
-    );
-  });
+  getMusicCommand(soundCommand)
+    .then(response => {
+      addSoundToCollection(response.command, response.link, "old_musics").then(
+        response => {
+          deleteSoundFromDB(soundCommand);
+        },
+        reject => {
+          console.log(reject);
+        },
+      );
+    })
+    .catch(e => console.log(e));
 }
 
 function getMusicCommands() {
