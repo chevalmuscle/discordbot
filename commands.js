@@ -21,6 +21,11 @@ const commands = {
     help: "The format must be like `deletesound <command>`",
     invoke: deleteSound,
   },
+  playYoutube: {
+    invocation: "play",
+    argumentsAmount: 2,
+    invoke: youtubeLink,
+  },
   play: {
     invocation: null,
     argumentsAmount: 1,
@@ -61,6 +66,23 @@ function help({ textChannel }) {
         console.log(reject);
       },
     )
+    .catch(e => console.log(e));
+}
+
+async function playYoutube({ message, voiceChannel }){
+  const youtubeLink = message[1];
+
+  voiceChannel
+    .join()
+    .then(connection => {
+      const stream = ytdl(youtubeLink, {
+        filter: "audioonly",
+      });
+      const dispatcher = connection.playStream(stream, streamOptions);
+      dispatcher.on("end", end => {
+        voiceChannel.leave();
+      });
+    })
     .catch(e => console.log(e));
 }
 
