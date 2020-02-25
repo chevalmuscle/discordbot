@@ -24,7 +24,7 @@ const commands = {
   playYoutube: {
     invocation: "play",
     argumentsAmount: 2,
-    invoke: youtubeLink,
+    invoke: playYoutube,
   },
   play: {
     invocation: null,
