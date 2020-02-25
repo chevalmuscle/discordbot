@@ -72,6 +72,8 @@ function help({ textChannel }) {
 async function playYoutube({ message, voiceChannel }){
   const youtubeLink = message[1];
 
+  const streamOptions = { volume: 1, passes: 3 };
+
   voiceChannel
     .join()
     .then(connection => {
