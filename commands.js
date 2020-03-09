@@ -85,6 +85,7 @@ async function playMusic({ message, voiceChannel }) {
               });
               const dispatcher = connection.playStream(stream, streamOptions);
               dispatcher.on("end", end => {
+                console.log(end)
                 voiceChannel.leave();
               });
             })
