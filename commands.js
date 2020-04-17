@@ -1,3 +1,4 @@
+require('console-stamp')(console, '[HH:MM:ss.l]');
 const MongoClient = require("mongodb").MongoClient;
 const mongoConnectionUri = process.env.MONGO_CONNECTION_URI;
 const ytdl = require("ytdl-core");
