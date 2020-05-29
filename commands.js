@@ -161,6 +161,7 @@ function getMusicCommands() {
   return new Promise(async (resolve, reject) => {
     const client = await MongoClient.connect(mongoConnectionUri, {
       useNewUrlParser: true,
+      useUnifiedTopology: true,
     }).catch(err => {
       reject(err);
     });
@@ -176,6 +177,7 @@ function getMusicCommand(command) {
   return new Promise(async (resolve, reject) => {
     const client = await MongoClient.connect(mongoConnectionUri, {
       useNewUrlParser: true,
+      useUnifiedTopology: true,
     }).catch(err => {
       console.log(err);
     });
@@ -196,6 +198,7 @@ function addSoundToCollection(soundCommand, link, collectionName) {
   return new Promise(async (resolve, reject) => {
     const client = await MongoClient.connect(mongoConnectionUri, {
       useNewUrlParser: true,
+      useUnifiedTopology: true,
     }).catch(err => {
       console.log(err);
     });
@@ -224,6 +227,7 @@ function deleteSoundFromDB(soundCommand) {
   return new Promise(async (resolve, reject) => {
     const client = await MongoClient.connect(mongoConnectionUri, {
       useNewUrlParser: true,
+      useUnifiedTopology: true,
     }).catch(err => {
       console.log(err);
     });
