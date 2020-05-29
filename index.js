@@ -25,7 +25,6 @@ client.on("message", async message => {
 
   const messageArgs = message.content.split(" ");
   const messageArgAmount = messageArgs.length;
-
   const invokeArgs = {
     message: messageArgs,
     textChannel: textChannel,
